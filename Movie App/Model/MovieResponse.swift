@@ -29,7 +29,7 @@ public struct Movie: Codable {
     let backdropPath: String?
     let belongsToCollection: BelongsToCollection?
     let budget: Int?
-    let something: [Genre] = []
+    let genres: [Genre] = []
     let genreIDS: [Int] = []
     let homepage: String?
     let id: Int
@@ -48,7 +48,7 @@ public struct Movie: Codable {
 
     enum CodingKeys: String, CodingKey {
         case adult
-        case something = "genres"
+        case genres
         case backdropPath = "backdrop_path"
         case belongsToCollection = "belongs_to_collection"
         case budget, homepage, id
@@ -89,7 +89,7 @@ struct BelongsToCollection: Codable {
 }
 
 // MARK: - Genre
-struct Genre: Codable {
+struct Genre: Codable, Equatable {
     let id: Int
     let name: String
 }

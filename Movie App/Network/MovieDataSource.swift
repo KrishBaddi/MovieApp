@@ -75,6 +75,7 @@ class MovieDataSource: MovieDataSourceProtocol {
                         let model: T = try JSONDecoder().decode(T.self, from: data)
                         observer.onNext(model)
                     } catch let error {
+
                         observer.onError(error)
                     }
                 }

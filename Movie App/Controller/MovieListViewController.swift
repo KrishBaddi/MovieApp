@@ -44,7 +44,7 @@ final class MovieListViewController: UIViewController, UITableViewDelegate {
     // MARK: - Private properties 🕶
     private let disposeBag = DisposeBag()
     private var tableView: UITableView!
-    private var refreshControl : UIRefreshControl?
+    private var refreshControl: UIRefreshControl?
 
     // MARK: - LifeCycle 🌎
     override func viewDidLoad() {
@@ -69,12 +69,14 @@ final class MovieListViewController: UIViewController, UITableViewDelegate {
 
 private extension MovieListViewController {
     func setup() {
+        self.title = "Movie App"
         configureTableView()
         bindRx()
+        setupErrorBinding()
     }
 
     func bindRx() {
-        self.viewModel.keyword(keyword:  "")
+        self.viewModel.keyword(keyword: "")
         self.viewModel.inputs.refresh()
 
         let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, Movie>>(
@@ -82,14 +84,14 @@ private extension MovieListViewController {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! MovieTableCell
                 cell.bindViewModel(movie)
                 return cell
-        })
+            })
 
         self.refreshControl?.rx.controlEvent(.valueChanged)
-            .bind(to:self.viewModel.inputs.loadPageTrigger)
+            .bind(to: self.viewModel.inputs.loadPageTrigger)
             .disposed(by: disposeBag)
 
         self.tableView.rx.reachedBottom
-            .bind(to:self.viewModel.inputs.loadNextPageTrigger)
+            .bind(to: self.viewModel.inputs.loadNextPageTrigger)
             .disposed(by: disposeBag)
 
         self.viewModel.outputs.elements.asDriver()
@@ -125,6 +127,14 @@ private extension MovieListViewController {
             }).disposed(by: disposeBag)
     }
 
+    private func setupErrorBinding() {
+        viewModel.outputs.error.asDriver(onErrorJustReturn: "")
+            .drive(onNext: { [weak self] error in
+                guard let self = self else { return }
+                self.showAlert(alertMessage: error.description)
+            }).disposed(by: disposeBag)
+    }
+
     func configureTableView() {
         self.tableView = UITableView(frame: UIScreen.main.bounds)
         self.tableView.estimatedRowHeight = 100.0
@@ -144,5 +154,11 @@ private extension MovieListViewController {
             refreshControl.backgroundColor = .clear
             refreshControl.tintColor = .lightGray
         }
+    }
+
+    private func showAlert(alertMessage: String) {
+        let alert = UIAlertController(title: "Alert", message: alertMessage, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
 }

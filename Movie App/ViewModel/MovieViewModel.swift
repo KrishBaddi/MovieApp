@@ -15,8 +15,8 @@ public protocol MovieViewModelInputs {
     func tapped(indexRow: Int)
     func keyword(keyword: String)
 
-    var loadPageTrigger: PublishSubject<Void> { get }
-    var loadNextPageTrigger: PublishSubject<Void> { get }
+    var loadPageTrigger: PublishRelay<Void> { get }
+    var loadNextPageTrigger: PublishRelay<Void> { get }
 }
 
 public protocol MovieViewModelOutputs {
@@ -24,6 +24,7 @@ public protocol MovieViewModelOutputs {
     var moreLoading: Driver<Bool> { get }
     var elements: BehaviorRelay<[Movie]> { get }
     var selectedViewModel: Driver<MovieDetailViewModel> { get }
+    var error: Driver<String> { get }
 }
 
 public protocol MovieViewModelType {
@@ -32,13 +33,12 @@ public protocol MovieViewModelType {
 }
 
 public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieViewModelOutputs {
+    public var error: Driver<String> = Driver.just("")
 
-    // MARK: - Private properties 🕶
     private var keyword = ""
     private var pageIndex: Int = 1
     private var primaryDate = "2016-12-31"
     private let disposeBag = DisposeBag()
-    private let error = PublishSubject<Swift.Error>()
 
     // MARK: - Visible properties 👓
     let movie = BehaviorRelay<Movie?>(value: nil)
@@ -47,8 +47,8 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
     public var moreLoading: Driver<Bool>
     public var elements: BehaviorRelay<[Movie]>
 
-    public var loadPageTrigger: PublishSubject<Void>
-    public var loadNextPageTrigger: PublishSubject<Void>
+    public var loadPageTrigger: PublishRelay<Void>
+    public var loadNextPageTrigger: PublishRelay<Void>
 
     public var selectedViewModel: Driver<MovieDetailViewModel>
     public var inputs: MovieViewModelInputs { return self }
@@ -63,9 +63,10 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
         self.selectedViewModel = Driver.empty()
         self.moreLoading = moreLoading.asDriver()
 
-        self.loadPageTrigger = PublishSubject<Void>()
-        self.loadNextPageTrigger = PublishSubject<Void>()
+        self.loadPageTrigger = PublishRelay<Void>()
+        self.loadNextPageTrigger = PublishRelay<Void>()
 
+        let errorRelay = PublishRelay<String>()
         self.elements = BehaviorRelay<[Movie]>(value: [])
 
         // First time load date
@@ -80,9 +81,16 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
                     self.elements.accept([])
                     return dataSource.getMoviesArray(self.primaryDate, .releaseDateDesc, page: self.pageIndex)
                         .observeOn(MainScheduler.instance)
+                        .asDriver(onErrorRecover: { (error) -> Driver<[Movie]> in
+                            errorRelay.accept((error as? ErrorResult)?.localizedDescription ?? error.localizedDescription)
+                            return Driver.just([Movie]())
+                        })
                         .trackActivity(Loading)
                 }
+
         }
+
+        self.error = errorRelay.asDriver(onErrorJustReturn: "Error occured")
 
         // Get more data by page
         let nextRequest = self.moreLoading.asObservable()
@@ -104,7 +112,8 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
         let response = request.flatMap { repositories -> Observable<[Movie]> in
             request
                 .do(onError: { _error in
-                    self.error.onNext(_error)
+                    //self.error.onNext(_error)
+                    errorRelay.accept((_error as? ErrorResult)?.localizedDescription ?? _error.localizedDescription)
                 }).catchError({ error -> Observable<[Movie]> in
                     Observable.empty()
                 })
@@ -120,14 +129,13 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
             .disposed(by: disposeBag)
 
         //binding selected item
-        self.selectedViewModel = self.movie.asDriver().filterNil().flatMapLatest{ movie -> Driver<MovieDetailViewModel> in
+        self.selectedViewModel = self.movie.asDriver().filterNil().flatMapLatest { movie -> Driver<MovieDetailViewModel> in
             return Driver.just(MovieDetailViewModel(movie: movie, dataSource: dataSource))
         }
     }
 
     public func refresh() {
-        self.loadPageTrigger
-            .onNext(())
+        self.loadPageTrigger.accept({}())
     }
 
     public func tapped(indexRow: Int) {
