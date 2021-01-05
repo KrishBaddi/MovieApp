@@ -23,7 +23,8 @@ public enum APIError: Error {
 }
 
 enum APIConstants: String {
-    case domain = "http://api.themoviedb.org/3/discover/"
+    case domain = "http://api.themoviedb.org/3/"
+    case requestDiscover = "discover/"
     case requestMovies = "movie"
 }
 
@@ -36,18 +37,32 @@ protocol MovieDataSourceProtocol {
 }
 
 class MovieDataSource: MovieDataSourceProtocol {
+    func getMoviesArray(_ primaryDate: String, _ sortBy: SortMovies, page: Int) -> Observable<[Movie]> {
+        let data = self.getMovies(primaryDate, sortBy, page: page)
+            .map { (result) -> [Movie] in
+                return result.movies
+            }
+        return data
+    }
+
+    func getMoviesDetails(_ movieId: Int) -> Observable<Movie> {
+        guard let url = URL(string: APIConstants.domain.rawValue  +  APIConstants.requestMovies.rawValue + "/\(movieId)") else { return Observable.error(APIError.invalidURL(message: "Invalid URL request")) }
+
+        let apiRequest = RestManager()
+        return send(url: url, apiRequest: apiRequest)
+    }
+
     func getMovies(_ primaryDate: String, _ sortBy: SortMovies, page: Int) -> Observable<MovieResponse> {
 
         //http://api.themoviedb.org/3/discover/movie?api_key=328c283cd27bd1877d9080ccb1604c91&primary_release_date.lte=2016-12-31&sort_by=release_date.desc&page=1
-        guard let url = URL(string: APIConstants.domain.rawValue + APIConstants.requestMovies.rawValue) else { return Observable.error(APIError.invalidURL(message: "Invalid URL request")) }
+        guard let url = URL(string: APIConstants.domain.rawValue + APIConstants.requestDiscover.rawValue + APIConstants.requestMovies.rawValue) else { return Observable.error(APIError.invalidURL(message: "Invalid URL request")) }
 
         let apiRequest = RestManager()
-        apiRequest.urlQueryParameters.add(value: primaryDate, forKey: "primary_release_date")
+        apiRequest.urlQueryParameters.add(value: primaryDate, forKey: "primary_release_date.lte")
         apiRequest.urlQueryParameters.add(value: sortBy.rawValue, forKey: "sort_by")
         apiRequest.urlQueryParameters.add(value: String(page), forKey: "page")
-
+        
         return send(url: url, apiRequest: apiRequest)
-
     }
 
 
@@ -79,5 +94,4 @@ class MovieDataSource: MovieDataSourceProtocol {
             }
         }
     }
-
 }

@@ -66,7 +66,7 @@ class RestManager {
     // MARK: - Private Methods
     private func addURLQueryParameters(toURL url: URL) -> URL {
         print(urlQueryParameters)
-        if urlQueryParameters.totalItems() > 0 {
+        if urlQueryParameters.totalItems() >= 0 {
             guard var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return url }
             var queryItems = [URLQueryItem]()
 

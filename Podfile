@@ -9,6 +9,9 @@ target 'Movie App' do
 	pod 'RxSwift'
 	pod 'RxCocoa'
 	pod 'RxDataSources'
+  pod 'SDWebImage'
+  pod 'SVProgressHUD'
+  pod 'RxOptional'
 
   target 'Movie AppTests' do
     inherit! :search_paths
