@@ -11,6 +11,7 @@ import RxSwift
 
 public protocol MovieDetailViewModelInputs { }
 
+// Values
 public protocol MovieDetailViewModelOutputs {
     var isLoading: Driver<Bool> { get }
     var dataObservable: Driver<[MovieDetailViewViewModel]> { get }
@@ -35,7 +36,6 @@ public class MovieDetailViewModel: MovieDetailViewModelType, MovieDetailViewMode
     private var dataSource: MovieDataSourceProtocol
 
     init(movieId: Int, dataSource: MovieDataSourceProtocol) {
-//        self.movie = movie
         self.dataSource = dataSource
         let errorRelay = PublishRelay<String>()
 

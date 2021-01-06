@@ -10,15 +10,17 @@ import RxCocoa
 import RxSwift
 import RxOptional
 
+
+// Event
 public protocol MovieViewModelInputs {
     func refresh()
     func tapped(indexRow: Int)
-    func keyword(keyword: String)
 
     var loadPageTrigger: PublishRelay<Void> { get }
     var loadNextPageTrigger: PublishRelay<Void> { get }
 }
 
+// Values
 public protocol MovieViewModelOutputs {
     var isLoading: Driver<Bool> { get }
     var moreLoading: Driver<Bool> { get }
@@ -43,6 +45,7 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
     // MARK: - Visible properties 👓
     let movie = BehaviorRelay<MovieViewViewModel?>(value: nil)
 
+
     public var isLoading: Driver<Bool>
     public var moreLoading: Driver<Bool>
     public var elements: BehaviorRelay<[MovieViewViewModel]>
@@ -51,12 +54,12 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
     public var loadNextPageTrigger: PublishRelay<Void>
 
     public var selectedViewModel: Driver<MovieDetailViewModel>
+    
     public var inputs: MovieViewModelInputs { return self }
     public var outputs: MovieViewModelOutputs { return self }
 
 
     var totalPages = 0
-
 
     // MARK: - Constructor 🏗
     init(dataSource: MovieDataSourceProtocol) {

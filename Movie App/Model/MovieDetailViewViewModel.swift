@@ -29,6 +29,9 @@ public struct MovieDetailViewViewModel {
         let ratingText = (0..<rating).reduce("") { (acc, _) -> String in
             return acc + "⭐️"
         }
+        if ratingText.isEmpty {
+            return "No Rating"
+        }
         return ratingText
     }
 
@@ -60,16 +63,16 @@ public struct MovieDetailViewViewModel {
         return ""
     }
 
-    // Generate list of genres seperated by |
+    // Generate list of genres separated by |
     func generateGenres() -> String {
-        var generText: String = ""
+        var genresText: String = ""
         self.genres.forEach { (item) in
             if item != self.genres.last {
-                generText += "\(item.name) |"
+                genresText += "\(item.name) |"
             } else {
-                generText += "\(item.name)"
+                genresText += "\(item.name)"
             }
         }
-        return generText
+        return genresText
     }
 }
