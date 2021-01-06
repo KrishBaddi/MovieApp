@@ -16,6 +16,9 @@ target 'Movie App' do
   target 'Movie AppTests' do
     inherit! :search_paths
     # Pods for testing
+    pod 'RxSwift'
+    pod 'RxCocoa'
+    pod 'RxDataSources'
   end
 
   target 'Movie AppUITests' do

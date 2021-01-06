@@ -22,7 +22,7 @@ public protocol MovieViewModelInputs {
 public protocol MovieViewModelOutputs {
     var isLoading: Driver<Bool> { get }
     var moreLoading: Driver<Bool> { get }
-    var elements: BehaviorRelay<[Movie]> { get }
+    var elements: BehaviorRelay<[MovieViewViewModel]> { get }
     var selectedViewModel: Driver<MovieDetailViewModel> { get }
     var error: Driver<String> { get }
 }
@@ -41,11 +41,11 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
     private let disposeBag = DisposeBag()
 
     // MARK: - Visible properties 👓
-    let movie = BehaviorRelay<Movie?>(value: nil)
+    let movie = BehaviorRelay<MovieViewViewModel?>(value: nil)
 
     public var isLoading: Driver<Bool>
     public var moreLoading: Driver<Bool>
-    public var elements: BehaviorRelay<[Movie]>
+    public var elements: BehaviorRelay<[MovieViewViewModel]>
 
     public var loadPageTrigger: PublishRelay<Void>
     public var loadNextPageTrigger: PublishRelay<Void>
@@ -54,8 +54,12 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
     public var inputs: MovieViewModelInputs { return self }
     public var outputs: MovieViewModelOutputs { return self }
 
+
+    var totalPages = 0
+
+
     // MARK: - Constructor 🏗
-    init(dataSource: MovieDataSource) {
+    init(dataSource: MovieDataSourceProtocol) {
 
         let Loading = ActivityIndicator()
         self.isLoading = Loading.asDriver()
@@ -67,23 +71,33 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
         self.loadNextPageTrigger = PublishRelay<Void>()
 
         let errorRelay = PublishRelay<String>()
-        self.elements = BehaviorRelay<[Movie]>(value: [])
+        self.elements = BehaviorRelay<[MovieViewViewModel]>(value: [])
+
 
         // First time load date
         let loadRequest = self.isLoading.asObservable()
             .sample(self.loadPageTrigger)
-            .flatMap { isLoading -> Observable<[Movie]> in
+            .flatMap { isLoading -> Observable<[MovieViewViewModel]> in
                 if isLoading {
                     return Observable.empty()
                 } else {
+                    self.totalPages = 0
                     self.pageIndex = 1
                     self.primaryDate = "2020-01-01"
                     self.elements.accept([])
-                    return dataSource.getMoviesArray(self.primaryDate, .releaseDateDesc, page: self.pageIndex)
+                    return dataSource.getMovies(self.primaryDate, .releaseDateDesc, page: self.pageIndex)
                         .observeOn(MainScheduler.instance)
-                        .asDriver(onErrorRecover: { (error) -> Driver<[Movie]> in
+                        .map({ (movieResponse) -> [Movie] in
+                            self.pageIndex = movieResponse.page
+                            self.totalPages = movieResponse.totalPages
+                            return movieResponse.movies
+                        })
+                        .map({ (movie) -> [MovieViewViewModel] in
+                            return movie.map({ MovieViewViewModel.init(movie: $0)})
+                        })
+                        .asDriver(onErrorRecover: { (error) -> Driver<[MovieViewViewModel]> in
                             errorRelay.accept((error as? ErrorResult)?.localizedDescription ?? error.localizedDescription)
-                            return Driver.just([Movie]())
+                            return Driver.just([MovieViewViewModel]())
                         })
                         .trackActivity(Loading)
                 }
@@ -95,13 +109,25 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
         // Get more data by page
         let nextRequest = self.moreLoading.asObservable()
             .sample(self.loadNextPageTrigger)
-            .flatMap { isLoading -> Observable<[Movie]> in
+            .flatMap { isLoading -> Observable<[MovieViewViewModel]> in
                 if isLoading {
                     return Observable.empty()
                 } else {
-                    self.pageIndex = self.pageIndex + 1
-                    return dataSource.getMoviesArray(self.primaryDate, .releaseDateDesc, page: self.pageIndex)
-                        .trackActivity(moreLoading)
+                    if (self.pageIndex + 1) != self.totalPages {
+                        self.pageIndex = self.pageIndex + 1
+                        return dataSource.getMovies(self.primaryDate, .releaseDateDesc, page: self.pageIndex)
+                            .observeOn(MainScheduler.instance)
+                            .map({ (movieResponse) -> [Movie] in
+                                self.pageIndex = movieResponse.page
+                                return movieResponse.movies
+                            })
+                            .map({ (movie) -> [MovieViewViewModel] in
+                                return movie.map({ MovieViewViewModel.init(movie: $0)})
+                            })
+                            .trackActivity(moreLoading)
+                    } else {
+                        return Observable.empty()
+                    }
                 }
         }
 
@@ -109,12 +135,12 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
             .merge()
             .share(replay: 1)
 
-        let response = request.flatMap { repositories -> Observable<[Movie]> in
+        let response = request.flatMap { repositories -> Observable<[MovieViewViewModel]> in
             request
                 .do(onError: { _error in
                     //self.error.onNext(_error)
                     errorRelay.accept((_error as? ErrorResult)?.localizedDescription ?? _error.localizedDescription)
-                }).catchError({ error -> Observable<[Movie]> in
+                }).catchError({ error -> Observable<[MovieViewViewModel]> in
                     Observable.empty()
                 })
         }.share(replay: 1)
@@ -130,12 +156,16 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
 
         //binding selected item
         self.selectedViewModel = self.movie.asDriver().filterNil().flatMapLatest { movie -> Driver<MovieDetailViewModel> in
-            return Driver.just(MovieDetailViewModel(movie: movie, dataSource: dataSource))
+            return Driver.just(MovieDetailViewModel(movieId: movie.id, dataSource: dataSource))
         }
     }
 
     public func refresh() {
-        self.loadPageTrigger.accept({}())
+        self.loadPageTrigger.accept({ }())
+    }
+
+    public func loadNextPage() {
+        self.loadNextPageTrigger.accept({ }())
     }
 
     public func tapped(indexRow: Int) {

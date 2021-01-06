@@ -12,29 +12,29 @@ import RxCocoa
 import RxDataSources
 import WebKit
 
+// Dependency Injection techniques with “Abstract Factory” pattern
 protocol MovieDetailsViewControllerFactory {
     func makeViewController() -> MovieDetailsViewController
     func makeMovieDetailViewModel() -> MovieDetailViewModel
-    func makeMovieDataSource() -> MovieDataSource
 }
 
 open class MovieDetailsDependencyContainer: MovieDetailsViewControllerFactory {
 
     var viewModel: MovieDetailViewModel
 
+    // Inject viewmodel
     init(viewModel: MovieDetailViewModel) {
         self.viewModel = viewModel
     }
+
+    // Instantiate View Controller
     func makeViewController() -> MovieDetailsViewController {
         MovieDetailsViewController(factory: self)
     }
 
+    // Return injected viewModel
     func makeMovieDetailViewModel() -> MovieDetailViewModel {
         viewModel
-    }
-
-    func makeMovieDataSource() -> MovieDataSource {
-        MovieDataSource()
     }
 }
 
@@ -45,15 +45,17 @@ class MovieDetailsViewController: UIViewController {
     // all the factory protocols that this view controller needs.
     typealias Factory = MovieDetailsViewControllerFactory
 
-    lazy var viewModel = factory.makeMovieDetailViewModel()
-    var datasource: [MovieDetailSectionModel] = []
-    let buttonClicked = PublishSubject<String>()
     private let factory: Factory
-    var webView: WKWebView!
+    // We can now lazily create our viewModel using the injected factory.
+    lazy var viewModel = factory.makeMovieDetailViewModel()
 
+    // MARK: - Private properties 🕶
+    var dataSource: [MovieDetailViewViewModel] = []
+    let buttonClicked = PublishSubject<String>()
     private var tableView: UITableView!
     private let disposeBag = DisposeBag()
 
+    // Injecting factory during view-controller Instantiation
     init(factory: Factory) {
         self.factory = factory
         super.init(nibName: nil, bundle: nil)
@@ -67,6 +69,7 @@ class MovieDetailsViewController: UIViewController {
         print("Deallocated...")
     }
 
+    // MARK: - LifeCycle 🌎
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTableView()
@@ -75,17 +78,22 @@ class MovieDetailsViewController: UIViewController {
     }
 
 
+    // Data binding to datasource property
     func bindRx() {
-        viewModel.outputs.dataObservable.drive(onNext: { data in
-            self.datasource = data
-            self.tableView.reloadData()
-        }).disposed(by: disposeBag)
 
+        // Bind button tap subject to WebView
         buttonClicked.subscribe { [weak self] (string) in
             self?.bookTapped()
         }.disposed(by: disposeBag)
+        
+        viewModel.outputs.dataObservable.drive(onNext: { data in
+            self.dataSource = data
+            self.tableView.reloadData()
+        }).disposed(by: disposeBag)
+
     }
 
+    // Binding to handle on API error to show alert
     private func setupErrorBinding() {
         viewModel.outputs.error.asDriver(onErrorJustReturn: "")
             .drive(onNext: { [weak self] error in
@@ -117,12 +125,12 @@ class MovieDetailsViewController: UIViewController {
 extension MovieDetailsViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return datasource.count
+        return dataSource.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell") as! MovieTableCell
-        let movieDetails = self.datasource[indexPath.row]
+        let movieDetails = self.dataSource[indexPath.row]
         cell.bindDetailsViewModel(movieDetails)
         cell.bindViewModel(viewModel: movieDetails, buttonClicked: buttonClicked)
         return cell

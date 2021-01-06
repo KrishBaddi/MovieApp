@@ -69,13 +69,6 @@ public struct Movie: Codable {
     }
 }
 
-
-struct SectionOfMovies: Codable {
-    var header: String
-    var items: [Movie]
-}
-
-
 // MARK: - BelongsToCollection
 struct BelongsToCollection: Codable {
     let id: Int

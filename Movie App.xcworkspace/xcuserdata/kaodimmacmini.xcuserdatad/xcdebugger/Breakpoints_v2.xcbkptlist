@@ -20,5 +20,85 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "F0A143BD-3308-4EB7-8409-065CD4DC7277"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Movie App/Controller/MovieDetailsViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
+            landmarkName = "bookTapped()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "73C16060-EF7C-4381-B2F1-18B38A1BAA61"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Movie App/Controller/MovieDetailsViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "100"
+            endingLineNumber = "100"
+            landmarkName = "setupErrorBinding()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AEEF6B44-ED2F-417B-8DF8-09B0700E5E05"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Movie App/View/MovieTableCell.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "91"
+            endingLineNumber = "91"
+            landmarkName = "bindViewModel(viewModel:buttonClicked:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "AEEF6B44-ED2F-417B-8DF8-09B0700E5E05 - 102b62d704682aa0"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Movie_App.MovieTableCell.bindViewModel&lt;A where A: RxSwift.ObserverType, A.Element == Swift.String&gt;(viewModel: Movie_App.MovieDetailSectionModel, buttonClicked: A) -&gt; ()"
+                  moduleName = "Movie App"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kaodimmacmini/Documents/Developer/Learning%20&amp;%20Development/Fave/Movie%20App/Movie%20App/View/MovieTableCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "542">
+               </Location>
+               <Location
+                  uuid = "AEEF6B44-ED2F-417B-8DF8-09B0700E5E05 - 30ea6acd02af2a77"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; Swift.String in Movie_App.MovieTableCell.bindViewModel&lt;A where A: RxSwift.ObserverType, A.Element == Swift.String&gt;(viewModel: Movie_App.MovieDetailSectionModel, buttonClicked: A) -&gt; ()"
+                  moduleName = "Movie App"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/kaodimmacmini/Documents/Developer/Learning%20&amp;%20Development/Fave/Movie%20App/Movie%20App/View/MovieTableCell.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "91"
+                  endingLineNumber = "91"
+                  offsetFromSymbolStart = "20">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

@@ -10,7 +10,6 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-
 class MovieTableCell: UITableViewCell {
 
     @IBOutlet weak var posterImage: ScaleAspectFitImageView!
@@ -35,14 +34,15 @@ class MovieTableCell: UITableViewCell {
         self.bookBtnView.layer.cornerRadius = 4
     }
 
-    func bindViewModel(_ movie: Movie?) {
+    // Configure data
+    func bindViewModel(_ movie: MovieViewViewModel?) {
         self.configureMovieInfo(movie?.title, movie?.popularity, movie?.overview)
         addPosterImage(movie?.backdropPath, movie?.posterPath)
         self.bookContentView.isHidden = true
     }
 
-
-    func bindDetailsViewModel(_ movieDetails: MovieDetailSectionModel) {
+    // Configure data
+    func bindDetailsViewModel(_ movieDetails: MovieDetailViewViewModel) {
         self.bookContentView.isHidden = false
 
         self.configureMovieInfo(movieDetails.title, movieDetails.popularity, movieDetails.overView)
@@ -61,7 +61,6 @@ class MovieTableCell: UITableViewCell {
         } else {
             genresLabel.text = "No genres"
         }
-
         self.durationLabel.text = "Duration: \(movieDetails.getMovieDuration())"
     }
 
@@ -86,10 +85,11 @@ class MovieTableCell: UITableViewCell {
         }
     }
 
-    func bindViewModel<O>(viewModel: MovieDetailSectionModel, buttonClicked: O) where O: ObserverType, O.Element == String {
+    //Emit the cell's viewModel title when the button is clicked
+    func bindViewModel<O>(viewModel: MovieDetailViewViewModel, buttonClicked: O) where O: ObserverType, O.Element == String {
         bookBtn.rx.tap
-            .map { viewModel.title } //emit the cell's viewModel id when the button is clicked for identification purposes.
-        .bind(to: buttonClicked) //problem binding because of optional.
+            .map { viewModel.title }
+        .bind(to: buttonClicked)
         .disposed(by: disposeBag)
     }
 

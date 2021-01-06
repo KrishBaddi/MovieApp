@@ -34,16 +34,10 @@ enum SortMovies: String {
 
 protocol MovieDataSourceProtocol {
     func getMovies(_ primaryDate: String, _ sortBy: SortMovies, page: Int) -> Observable<MovieResponse>
+    func getMoviesDetails(_ movieId: Int) -> Observable<Movie>
 }
 
 class MovieDataSource: MovieDataSourceProtocol {
-    func getMoviesArray(_ primaryDate: String, _ sortBy: SortMovies, page: Int) -> Observable<[Movie]> {
-        let data = self.getMovies(primaryDate, sortBy, page: page)
-            .map { (result) -> [Movie] in
-                return result.movies
-            }
-        return data
-    }
 
     func getMoviesDetails(_ movieId: Int) -> Observable<Movie> {
         guard let url = URL(string: APIConstants.domain.rawValue  +  APIConstants.requestMovies.rawValue + "/\(movieId)") else { return Observable.error(APIError.invalidURL(message: "Invalid URL request")) }
