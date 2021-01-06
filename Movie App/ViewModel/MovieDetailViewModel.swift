@@ -15,8 +15,8 @@ public protocol MovieDetailViewModelOutputs {
     var isLoading: Driver<Bool> { get }
     var dataObservable: Driver<[MovieDetailSectionModel]> { get }
     var error: Driver<String> { get }
-}
 
+}
 public protocol MovieDetailViewModelType {
     var inputs: MovieDetailViewModelInputs { get }
     var outputs: MovieDetailViewModelOutputs { get }

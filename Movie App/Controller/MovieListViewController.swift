@@ -95,13 +95,8 @@ private extension MovieListViewController {
             .disposed(by: disposeBag)
 
         self.viewModel.outputs.elements.asDriver()
-            .map { [SectionModel(model: "Repositories", items: $0)] }
+            .map { [SectionModel(model: "Movie List", items: $0)] }
             .drive(self.tableView.rx.items(dataSource: dataSource))
-            .disposed(by: disposeBag)
-
-        self.tableView.rx.itemSelected
-            .map { (at: $0, animated: true) }
-            .subscribe(onNext: tableView.deselectRow)
             .disposed(by: disposeBag)
 
         self.tableView.rx.itemSelected

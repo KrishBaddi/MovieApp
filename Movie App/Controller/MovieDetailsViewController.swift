@@ -128,4 +128,3 @@ extension MovieDetailsViewController: UITableViewDataSource {
         return cell
     }
 }
-
