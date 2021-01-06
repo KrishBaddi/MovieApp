@@ -42,7 +42,7 @@ public class MovieDetailViewModel: MovieDetailViewModelType, MovieDetailViewMode
         let Loading = ActivityIndicator()
         self.isLoading = Loading.asDriver()
 
-        self.error = errorRelay.asDriver(onErrorJustReturn: "Error occured")
+        self.error = errorRelay.asDriver(onErrorJustReturn: "Error occurred")
 
         self.dataObservable = dataSource.getMoviesDetails(movieId)
             .flatMap({ (movie) -> Driver<[MovieDetailViewViewModel]> in

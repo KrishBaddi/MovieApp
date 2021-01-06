@@ -72,7 +72,7 @@ public struct Movie: Codable {
 // MARK: - BelongsToCollection
 struct BelongsToCollection: Codable {
     let id: Int
-    let name, posterPath, backdropPath: String
+    let name, posterPath, backdropPath: String?
 
     enum CodingKeys: String, CodingKey {
         case id, name
