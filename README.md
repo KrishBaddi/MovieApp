@@ -1,4 +1,4 @@
-<h2> MovieApp using RxSwift 5 and MVVM Architecture </h2>
+<h2> MovieApp using RxSwift 5, MVVM Architecture and Dependency Injection</h2>
 <h6>  This app is a movie info app that uses the Movie Database (TMDb) API </h6>
 </br>
 
