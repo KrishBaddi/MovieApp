@@ -16,6 +16,7 @@ class MovieTableCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var popularityLabel: UILabel!
     @IBOutlet weak var overViewLabel: UILabel!
+    @IBOutlet weak var ratingLabel: UILabel!
 
     @IBOutlet weak var releaseData: UILabel!
     @IBOutlet weak var languageLabel: UILabel!
@@ -36,7 +37,7 @@ class MovieTableCell: UITableViewCell {
 
     // Configure data
     func bindViewModel(_ movie: MovieViewViewModel?) {
-        self.configureMovieInfo(movie?.title, movie?.popularity, movie?.overview)
+        self.configureMovieInfo(movie?.title, movie?.popularity, movie?.overview, rating: movie?.rating)
         addPosterImage(movie?.backdropPath, movie?.posterPath)
         self.bookContentView.isHidden = true
     }
@@ -45,7 +46,7 @@ class MovieTableCell: UITableViewCell {
     func bindDetailsViewModel(_ movieDetails: MovieDetailViewViewModel) {
         self.bookContentView.isHidden = false
 
-        self.configureMovieInfo(movieDetails.title, movieDetails.popularity, movieDetails.overView)
+        self.configureMovieInfo(movieDetails.title, movieDetails.popularity, movieDetails.overView, rating: movieDetails.rating)
         releaseData.text = "Release Date: \(movieDetails.releaseDate)"
 
         addPosterImage(movieDetails.backdropPath, movieDetails.posterPath)
@@ -64,7 +65,7 @@ class MovieTableCell: UITableViewCell {
         self.durationLabel.text = "Duration: \(movieDetails.getMovieDuration())"
     }
 
-    func configureMovieInfo(_ title: String?, _ popularity: Double?, _ overview: String?) {
+    func configureMovieInfo(_ title: String?, _ popularity: Double?, _ overview: String?, rating: String?) {
         self.titleLabel.text = "Title: " + (title ?? "")
         if let popularity = popularity {
             self.popularityLabel.text = "Popularity: " + String(format: "%.2f", popularity)
@@ -72,6 +73,8 @@ class MovieTableCell: UITableViewCell {
             self.popularityLabel.text = "NA"
         }
         self.overViewLabel.text = overview
+
+        self.ratingLabel.text = rating
     }
 
     func addPosterImage(_ backdropPath: String?, _ posterPath: String?) {

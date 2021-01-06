@@ -44,7 +44,10 @@ public struct MovieViewViewModel {
         let ratingText = (0..<rating).reduce("") { (acc, _) -> String in
             return acc + "⭐️"
         }
+        
+        if ratingText.isEmpty {
+            return "No Rating"
+        }
         return ratingText
     }
-
 }

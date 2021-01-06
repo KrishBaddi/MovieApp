@@ -22,6 +22,16 @@ public struct MovieDetailViewViewModel {
         languageCode?.language
     }
 
+    var voteAverage: Double
+
+    var rating: String {
+        let rating = Int(voteAverage)
+        let ratingText = (0..<rating).reduce("") { (acc, _) -> String in
+            return acc + "⭐️"
+        }
+        return ratingText
+    }
+
     init(_ movie: Movie) {
         self.title = movie.title ?? ""
         self.genres = movie.genres
@@ -32,6 +42,7 @@ public struct MovieDetailViewViewModel {
         self.posterPath = movie.posterPath
         self.releaseDate = movie.releaseDate
         self.runtime = movie.runtime
+        self.voteAverage = movie.voteAverage
 
     }
 
