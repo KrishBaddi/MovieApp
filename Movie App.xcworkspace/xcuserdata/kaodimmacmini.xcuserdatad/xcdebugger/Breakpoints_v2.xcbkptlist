@@ -7,38 +7,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E1880112-3F8A-413F-957D-CCBB29413238"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Movie App/Network/RestManager.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
-            landmarkName = "getData(fromURL:completion:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "F0A143BD-3308-4EB7-8409-065CD4DC7277"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Movie App/Controller/MovieDetailsViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
-            landmarkName = "bookTapped()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "73C16060-EF7C-4381-B2F1-18B38A1BAA61"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
@@ -55,64 +23,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "AEEF6B44-ED2F-417B-8DF8-09B0700E5E05"
+            uuid = "DC05BE02-B534-4668-B235-236168A1A12E"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Movie App/View/MovieTableCell.swift"
+            filePath = "Movie App/ViewModel/MovieViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
-            landmarkName = "bindViewModel(viewModel:buttonClicked:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "AEEF6B44-ED2F-417B-8DF8-09B0700E5E05 - 9ea9d4e67fda9f3f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Movie_App.MovieTableCell.bindViewModel&lt;A where A: RxSwift.ObserverType, A.Element == Swift.String&gt;(viewModel: Movie_App.MovieDetailViewViewModel, buttonClicked: A) -&gt; ()"
-                  moduleName = "Movie App"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/kaodimmacmini/Documents/Developer/Learning%20&amp;%20Development/Fave/Movie%20App/Movie%20App/View/MovieTableCell.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "94"
-                  endingLineNumber = "94"
-                  offsetFromSymbolStart = "542">
-               </Location>
-               <Location
-                  uuid = "AEEF6B44-ED2F-417B-8DF8-09B0700E5E05 - 577f8fb6a4a79a23"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; Swift.String in Movie_App.MovieTableCell.bindViewModel&lt;A where A: RxSwift.ObserverType, A.Element == Swift.String&gt;(viewModel: Movie_App.MovieDetailViewViewModel, buttonClicked: A) -&gt; ()"
-                  moduleName = "Movie App"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/kaodimmacmini/Documents/Developer/Learning%20&amp;%20Development/Fave/Movie%20App/Movie%20App/View/MovieTableCell.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "94"
-                  endingLineNumber = "94"
-                  offsetFromSymbolStart = "20">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "9C4E1208-23BB-42AD-A280-D67720C190FD"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Movie App/Network/MovieDataSource.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
-            landmarkName = "send(url:apiRequest:)"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
+            landmarkName = "init(dataSource:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

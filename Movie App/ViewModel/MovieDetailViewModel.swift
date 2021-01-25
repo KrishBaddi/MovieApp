@@ -45,9 +45,9 @@ public class MovieDetailViewModel: MovieDetailViewModelType, MovieDetailViewMode
         self.error = errorRelay.asDriver(onErrorJustReturn: "Error occurred")
 
         self.dataObservable = dataSource.getMoviesDetails(movieId)
-            .flatMap({ (movie) -> Driver<[MovieDetailViewViewModel]> in
-                Driver.just([MovieDetailViewViewModel.init(movie)])
-            }) .asDriver(onErrorRecover: { (error) -> Driver<[MovieDetailViewViewModel]> in
+            .flatMap({ (movie) -> Single<[MovieDetailViewViewModel]> in
+                Single.just([MovieDetailViewViewModel.init(movie)])
+            }).asDriver(onErrorRecover: { (error) -> Driver<[MovieDetailViewViewModel]> in
                 errorRelay.accept((error as? ErrorResult)?.localizedDescription ?? error.localizedDescription)
                 return Driver.just([MovieDetailViewViewModel]())
             })

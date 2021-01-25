@@ -14,19 +14,6 @@ class ViewController: UIViewController {
         // Do any additional setup after loading the view.
 
         let data = MovieDataSource()
-        data.getMovies("2016-12-31", .releaseDateDesc, page: 1)
-            .map { (result) -> [Movie] in
-                result.movies
-            }.subscribe { (movies) in
-
-            } onError: { (error) in
-
-            } onCompleted: {
-
-            } onDisposed: {
-                
-            }
-
         
     }
 

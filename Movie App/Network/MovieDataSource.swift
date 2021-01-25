@@ -33,23 +33,23 @@ enum SortMovies: String {
 }
 
 protocol MovieDataSourceProtocol {
-    func getMovies(_ primaryDate: String, _ sortBy: SortMovies, page: Int) -> Observable<MovieResponse>
-    func getMoviesDetails(_ movieId: Int) -> Observable<Movie>
+    func getMovies(_ primaryDate: String, _ sortBy: SortMovies, page: Int) -> Single<MovieResponse>
+    func getMoviesDetails(_ movieId: Int) -> Single<Movie>
 }
 
 class MovieDataSource: MovieDataSourceProtocol {
 
-    func getMoviesDetails(_ movieId: Int) -> Observable<Movie> {
-        guard let url = URL(string: APIConstants.domain.rawValue  +  APIConstants.requestMovies.rawValue + "/\(movieId)") else { return Observable.error(APIError.invalidURL(message: "Invalid URL request")) }
+    func getMoviesDetails(_ movieId: Int) -> Single<Movie> {
+        guard let url = URL(string: APIConstants.domain.rawValue  +  APIConstants.requestMovies.rawValue + "/\(movieId)") else { return Single.error(APIError.invalidURL(message: "Invalid URL request")) }
 
         let apiRequest = RestManager()
         return send(url: url, apiRequest: apiRequest)
     }
 
-    func getMovies(_ primaryDate: String, _ sortBy: SortMovies, page: Int) -> Observable<MovieResponse> {
+    func getMovies(_ primaryDate: String, _ sortBy: SortMovies, page: Int) -> Single<MovieResponse> {
 
         //http://api.themoviedb.org/3/discover/movie?api_key=328c283cd27bd1877d9080ccb1604c91&primary_release_date.lte=2016-12-31&sort_by=release_date.desc&page=1
-        guard let url = URL(string: APIConstants.domain.rawValue + APIConstants.requestDiscover.rawValue + APIConstants.requestMovies.rawValue) else { return Observable.error(APIError.invalidURL(message: "Invalid URL request")) }
+        guard let url = URL(string: APIConstants.domain.rawValue + APIConstants.requestDiscover.rawValue + APIConstants.requestMovies.rawValue) else { return Single.error(APIError.invalidURL(message: "Invalid URL request")) }
 
         let apiRequest = RestManager()
         apiRequest.urlQueryParameters.add(value: primaryDate, forKey: "primary_release_date.lte")
@@ -60,30 +60,18 @@ class MovieDataSource: MovieDataSourceProtocol {
     }
 
 
-    func send<T: Codable>(url: URL, apiRequest: RestManager) -> Observable<T> {
-        return Observable<T>.create { observer in
-
+    func send<T: Codable>(url: URL, apiRequest: RestManager) -> Single<T> {
+        return Single<T>.create { single in
             apiRequest.makeRequest(toURL: url, withHttpMethod: .get) { (results) in
                 if let data = results.data {
                     do {
                         let model: T = try JSONDecoder().decode(T.self, from: data)
-                        observer.onNext(model)
+                        single(.success(model))
                     } catch let error {
-
-                        observer.onError(error)
+                        single(.error(error))
                     }
                 }
-
-                print("\n\nResponse HTTP Headers:\n")
-
-                if let response = results.response {
-                    for (key, value) in response.headers.allValues() {
-                        print(key, value)
-                    }
-                }
-                observer.onCompleted()
             }
-
             return Disposables.create {
                 apiRequest.cancel()
             }

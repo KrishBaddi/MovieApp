@@ -26,9 +26,7 @@ class RestManager {
     // MARK: - Properties
 
     var requestHttpHeaders = RestEntity()
-
     var urlQueryParameters = RestEntity()
-
     var httpBodyParameters = RestEntity()
 
     var httpBody: Data?

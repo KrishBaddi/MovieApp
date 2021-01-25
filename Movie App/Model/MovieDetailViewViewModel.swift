@@ -46,7 +46,6 @@ public struct MovieDetailViewViewModel {
         self.releaseDate = movie.releaseDate
         self.runtime = movie.runtime
         self.voteAverage = movie.voteAverage
-
     }
 
     // Function to convert intervals to hours and minutes

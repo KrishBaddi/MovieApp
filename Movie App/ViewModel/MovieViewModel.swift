@@ -122,12 +122,17 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
                             .observeOn(MainScheduler.instance)
                             .map({ (movieResponse) -> [Movie] in
                                 self.pageIndex = movieResponse.page
+                                self.totalPages = movieResponse.totalPages
                                 return movieResponse.movies
                             })
                             .map({ (movie) -> [MovieViewViewModel] in
                                 return movie.map({ MovieViewViewModel.init(movie: $0)})
                             })
-                            .trackActivity(moreLoading)
+                            .asDriver(onErrorRecover: { (error) -> Driver<[MovieViewViewModel]> in
+                                errorRelay.accept((error as? ErrorResult)?.localizedDescription ?? error.localizedDescription)
+                                return Driver.just([MovieViewViewModel]())
+                            })
+                            .trackActivity(Loading)
                     } else {
                         return Observable.empty()
                     }
@@ -137,6 +142,7 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
         let request = Observable.of(loadRequest, nextRequest)
             .merge()
             .share(replay: 1)
+
 
         let response = request.flatMap { repositories -> Observable<[MovieViewViewModel]> in
             request
@@ -148,6 +154,8 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
                 })
         }.share(replay: 1)
 
+        
+
         // combine data when get more data by paging
         Observable
             .combineLatest(request, response, elements.asObservable()) { request, response, elements in
@@ -156,6 +164,7 @@ public class MovieViewModel: MovieViewModelType, MovieViewModelInputs, MovieView
             .sample(response)
             .bind(to: elements)
             .disposed(by: disposeBag)
+        
 
         //binding selected item
         self.selectedViewModel = self.movie.asDriver().filterNil().flatMapLatest { movie -> Driver<MovieDetailViewModel> in

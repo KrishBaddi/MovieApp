@@ -27,7 +27,7 @@ public struct MovieViewViewModel {
         return movie.overview
     }
 
-    var posterPath: String {
+    var posterPath: String? {
         return movie.posterPath
     }
 

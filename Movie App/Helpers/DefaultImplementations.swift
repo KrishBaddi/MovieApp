@@ -24,7 +24,6 @@ func isLoading(for view: UIView) -> AnyObserver<Bool> {
     }).asObserver()
 }
 
-//https://gist.github.com/brocoo/aaabf12c6c2b13d292f43c971ab91dfa
 extension Reactive where Base: UIScrollView {
     public var reachedBottom: Observable<Void> {
         let scrollView = self.base as UIScrollView
